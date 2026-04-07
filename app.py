@@ -85,59 +85,89 @@ def val(v, fmt=None):
 st.title("🏠 PRO 재개발 특약 생성기")
 st.caption("계약서 특약 / 가계약 약정서를 자동 생성합니다 — 모바일·PC 어디서나 사용 가능")
 
-# ─────────────────────────────────── 문서 종류 선택 ──────────────────────────
+# ─────────────────────────────────── 문서 종류 및 특약 그룹 선택 ──────────────────────────
 
 doc_type = st.radio(
     "📄 작성 문서 선택",
-    ["📋 계약서 특약 작성폼", "📝 계약금일부금 특약 작성폼(약정서)"],
+    ["📋 본 계약서 특약", "📝 계약금일부금 약정서"],
     horizontal=True
 )
 is_prov = doc_type.startswith("📝")
 
-st.divider()
-
-# ─────────────────────────────────── 입력 폼 ─────────────────────────────────
-
-st.markdown('<div class="section-title">🧱 통합 기본 정보 (약정서 & 특약 공통)</div>', unsafe_allow_html=True)
-c1, c2, c3 = st.columns(3)
-with c1:
-    st.markdown("**🏗️ 물건 기본**")
-    구역명   = st.text_input("📍 구역명", placeholder="예: 노량진3구역")
-    소재지   = st.text_input("🏠 대상물건 소재지", placeholder="예: 노량진동 234-5외 1필지")
-    조합원번호 = st.text_input("🔢 조합원번호", placeholder="예: 52")
-    신청주택형 = st.text_input("🏢 신청 주택형", placeholder="예: 84+59")
-with c2:
-    st.markdown("**👥 당사자 및 계좌**")
-    매도인   = st.text_input("👤 매도인 성명", placeholder="예: 김귀임")
-    매수인   = st.text_input("👥 매수인 성명", placeholder="예: 권정환, 윤선미")
-    계좌번호 = st.text_input("💳 매도인 입금계좌", placeholder="예: (기업) 071-007...")
-    전세보증금 = st.text_input("🤝 조건부 전세보증금", placeholder="예: 8억 (숫자+억)")
-with c3:
-    st.markdown("**📊 재개발 가액 정보**")
-    종전자산   = st.text_input("📉 감정가액(종전자산)", placeholder="예: 415466490")
-    비례율     = st.text_input("📊 비례율", placeholder="예: 100.66")
-    권리가액   = st.text_input("📈 권리가액", placeholder="예: 663000000")
-
-st.divider()
-st.markdown('<div class="section-title">💰 대금 및 상세 조건 (약정서 및 세부 특약용)</div>', unsafe_allow_html=True)
-c4, c5, c6 = st.columns(3)
-with c4:
-    총매매금액 = st.text_input("💵 총 매매금액", placeholder="예: 2260000000")
-    총계약금   = st.text_input("💰 총 계약금액", placeholder="예: 220000000")
-    기지급금액 = st.text_input("💸 금일 송금액(가계약금)", placeholder="예: 5000만원")
-with c5:
-    작성예정일 = st.text_input("📝 본계약 작성예정일", placeholder="예: 25년 11월 13일")
-    기지급일자 = st.text_input("📅 가계약 송금일자", placeholder="예: 2025.11.3.")
-    근저당원금 = st.text_input("🏦 근저당 설정원금(억)", placeholder="예: 7 (숫자만 입력)")
-with c6:
-    중도금   = st.text_input("⏳ 중도금 및 지급일", placeholder="예: 880,000,000원 / 2025.12.3.")
-    잔금     = st.text_input("🏁 잔금 및 지급일", placeholder="예: 700,000,000원 / 2026.2.27.")
-    상환일   = st.text_input("📆 원금상환 약속일", placeholder="예: 26년1월30일")
+if not is_prov:
+    contract_group = st.selectbox(
+        "🏷️ 물건 그룹 선택",
+        ["물건 그룹 1 (노량진 등)", "물건 그룹 2", "물건 그룹 3"]
+    )
+else:
+    contract_group = "약정서 폼 (계약금일부금)"
 
 st.divider()
 
+# ─────────────────────────────────── 입력 폼 구조 분리 ─────────────────────────────────
+
+# 글로벌 변수 초기화 (에러 방지용)
+구역명, 소재지, 조합원번호, 신청주택형 = "", "", "", ""
+매도인, 매수인, 계좌번호, 전세보증금 = "", "", "", ""
+종전자산, 비례율, 권리가액 = "", "", ""
+총매매금액, 총계약금, 기지급금액 = "", "", ""
+작성예정일, 기지급일자, 근저당원금 = "", "", ""
+중도금, 잔금, 상환일 = "", "", ""
+
+if is_prov:
+    st.markdown('<div class="section-title">🧱 약정서 기본 정보 입력</div>', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        구역명   = st.text_input("📍 구역명", placeholder="예: 노량진3구역")
+        소재지   = st.text_input("🏠 대상물건 소재지", placeholder="예: 노량진동 234-5외 1필지")
+        매도인   = st.text_input("👤 매도인 성명", placeholder="예: 김귀임")
+        매수인   = st.text_input("👥 매수인 성명", placeholder="예: 권정환, 윤선미")
+        계좌번호 = st.text_input("💳 매도인 입금계좌", placeholder="예: (기업) 071-007...")
+    with c2:
+        종전자산   = st.text_input("📉 감정가액(종전자산)", placeholder="예: 415466490")
+        비례율     = 주전세보증금 = st.text_input("📊 비례율", placeholder="예: 100.66")
+        권리가액   = st.text_input("📈 권리가액", placeholder="예: 663000000")
+        전세보증금 = st.text_input("🤝 조건부 주전세보증금", placeholder="예: 8억 (숫자+억)")
+    with c3:
+        총매매금액 = st.text_input("💵 총 매매금액", placeholder="예: 2260000000")
+        총계약금   = st.text_input("💰 총 계약금액", placeholder="예: 220000000")
+        기지급금액 = st.text_input("💸 금일 송금액(일부금)", placeholder="예: 5000만원")
+        기지급일자 = st.text_input("📅 일부금 송금일자", placeholder="예: 2025.11.3.")
+        
+    st.divider()
+    st.markdown('<div class="section-title">📆 일정 정보</div>', unsafe_allow_html=True)
+    c4, c5 = st.columns(2)
+    with c4:
+        작성예정일 = st.text_input("📝 본계약 작성예정일시", placeholder="예: 25년 11월 13일")
+        중도금   = st.text_input("⏳ 중도금 및 지급일", placeholder="예: 880,000,000원 / 2025.12.3.")
+    with c5:
+        잔금     = st.text_input("🏁 잔금 및 지급일", placeholder="예: 700,000,000원 / 2026.2.27.")
+
+else:
+    # --- 본 계약서 모드 (그룹별로 보여줄 필드가 다를 수 있지만 일단 통합 표시) ---
+    st.markdown('<div class="section-title">🧱 계약서 특약 정보 입력</div>', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("**🏗️ 물건 기본**")
+        구역명   = st.text_input("📍 구역명", placeholder="예: 노량진3구역")
+        조합원번호 = st.text_input("🔢 조합원번호", placeholder="예: 52")
+        신청주택형 = st.text_input("🏢 신청 주택형", placeholder="예: 84+59")
+    with c2:
+        st.markdown("**📊 재개발 가액 정보**")
+        종전자산   = st.text_input("📉 감정가액(종전자산)", placeholder="예: 415466490")
+        비례율     = st.text_input("📊 비례율", placeholder="예: 100.66")
+        권리가액   = st.text_input("📈 권리가액", placeholder="예: 663000000")
+    with c3:
+        st.markdown("**💰 주요 조건**")
+        잔금     = st.text_input("🏁 잔금일", placeholder="예: 2026.2.27.")
+        전세보증금 = st.text_input("🤝 조건부 주전세보증금", placeholder="예: 8억 (숫자+억)")
+        근저당원금 = st.text_input("🏦 근저당 설정원금(억)", placeholder="예: 7 (숫자만 입력)")
+        상환일   = st.text_input("📆 근저당 상환약속일", placeholder="예: 26년1월30일")
+
+st.divider()
 
 # ─────────────────────────────────── 특약 생성 ───────────────────────────────
+
 
 def gen_clauses():
     jeon = val(종전자산, "money")
@@ -157,7 +187,7 @@ def gen_clauses():
     loan_max  = f"{float(근저당원금)*1.2:.1f}억" if 근저당원금 else "8.4억"
     repay_dt  = 상환일 if 상환일 else "26년1월30일"
 
-    if contract_type == "약정서 폼 (계약금일부금)":
+    if contract_group == "약정서 폼 (계약금일부금)":
         header = (
             f"< 부동산 매매계약 약정서 >\n"
             f"부동산표시 : {val(소재지)} ({val(구역명)} 구역 내 매물)\n"
@@ -176,7 +206,7 @@ def gen_clauses():
         )
         return header + footer_cancel
 
-    elif contract_type == "물건 그룹 1 (노량진 등)":
+    elif contract_group == "물건 그룹 1 (노량진 등)":
         clauses = [
             "현시설상태에서의 계약이다.",
             f"등기부등본, 건축물대장, 분양통지서 상 조합원번호 {jo_num}번, 소유자 통장을 통해 소유자 확인과 권리관계 확인하고 계약을 진행함.",
@@ -194,7 +224,7 @@ def gen_clauses():
         numbered = "\n".join(f"{i}. {c}" for i, c in enumerate(clauses, 1))
         return numbered + footer_cancel
 
-    elif contract_type == "물건 그룹 2":
+    elif contract_group == "물건 그룹 2":
         clauses = [
             "현시설상태에서의 계약이다.",
             f"등기부등본, 건축물대장 등을 통해 소유자 및 권리관계를 확인하고 계약을 진행함.",
@@ -206,7 +236,7 @@ def gen_clauses():
         numbered = "\n".join(f"{i}. {c}" for i, c in enumerate(clauses, 1))
         return numbered + footer_cancel
 
-    elif contract_type == "물건 그룹 3":
+    elif contract_group == "물건 그룹 3":
         clauses = [
             "현시설상태에서의 계약이다.",
             "본 계약은 당사자 간의 원만한 합의에 의해 체결되며, 계약일 이후 발생하는 각종 조세 및 공과금은 잔금일을 기준으로 정산한다.",
