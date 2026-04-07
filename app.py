@@ -273,7 +273,6 @@ edited = st.text_area(
     label="결과 (직접 수정 가능)",
     value=result,
     height=500,
-    key="result_area",
     label_visibility="collapsed"
 )
 
