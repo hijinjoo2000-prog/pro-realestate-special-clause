@@ -107,59 +107,99 @@ with col_b:
 
 st.divider()
 
-# ─────────────────────────────────── 통합 입력 폼 ─────────────────────────────────
+# 글로벌 변수 초기화 (에러 방지용)
+구역명, 소재지, 조합원번호, 신청주택형 = "", "", "", ""
+매도인, 매수인, 계좌번호, 전세보증금 = "", "", "", ""
+종전자산, 비례율, 권리가액 = "", "", ""
+총매매금액, 총계약금, 기지급금액 = "", "", ""
+작성예정일, 기지급일자, 근저당원금 = "", "", ""
+중도금, 잔금, 상환일, 멸실기한 = "", "", "", ""
+진행단계 = ""
+opt_jeonse = opt_loan = opt_predunggi = False
+opt_noloan_check = opt_loan_coop = opt_eju_loan = False
 
-st.markdown('<div class="section-title">🧱 통합 기본 정보 (약정서 & 본 계약서 공통)</div>', unsafe_allow_html=True)
-c1, c2, c3 = st.columns(3)
-with c1:
-    st.markdown("**🏗️ 물건 기본**")
-    구역명   = st.text_input("📍 구역명", placeholder="예: 노량진3구역")
-    소재지   = st.text_input("🏠 대상물건 소재지", placeholder="예: 노량진동 234-5외 1필지")
-    조합원번호 = st.text_input("🔢 조합원번호", placeholder="예: 52")
-    신청주택형 = st.text_input("🏢 신청 주택형", placeholder="예: 84+59")
-with c2:
-    st.markdown("**👥 당사자 및 계좌**")
-    매도인   = st.text_input("👤 매도인 성명", placeholder="예: 김귀임")
-    매수인   = st.text_input("👥 매수인 성명", placeholder="예: 권정환, 윤선미")
-    계좌번호 = st.text_input("💳 매도인 입금계좌", placeholder="예: (기업) 071-007...")
-    전세보증금 = st.text_input("🤝 조건부 주전세보증금", placeholder="예: 8억 (숫자+억)")
-with c3:
-    st.markdown("**📊 재개발 가액 정보**")
-    종전자산   = st.text_input("📉 감정가액(종전자산)", placeholder="예: 415466490")
-    비례율     = st.text_input("📊 비례율", placeholder="예: 100.66")
-    권리가액   = st.text_input("📈 권리가액", placeholder="예: 663000000")
+if not is_prov:
+    # --- 본 계약서 모드 ---
+    st.markdown('<div class="section-title">✅ 그룹 1: 필수 공통 특약 (기본 적용, 해제 불가)</div>', unsafe_allow_html=True)
+    st.info("""
+    ✔️ 제1조~제9조 계약내용 인지 및 현 시설 상태 확인 (공부상 이상 없음)  
+    ✔️ 개별 추정분담금 내역 및 신청 주택형 서류상 확인  
+    ✔️ 재개발 사업 진행단계 인지 및 의무/권리/분양여부 조합 직접 확인 숙지  
+    ✔️ 다물권자 확약 및 손해배상 (기존 안전장치)  
+    ✔️ 재당첨 제한 고지 및 정보 송달/권리변동 금지  
+    ✔️ 제세공과금 기준 및 세무사 의뢰 확인  
+    ✔️ 사업 지연/가격 변동성에 대한 중개사 면책
+    """)
+    st.divider()
 
-st.divider()
-st.markdown('<div class="section-title">💰 대금 및 상세 조건</div>', unsafe_allow_html=True)
-c4, c5, c6 = st.columns(3)
-with c4:
-    총매매금액 = st.text_input("💵 총 매매금액", placeholder="예: 2260000000")
-    총계약금   = st.text_input("💰 총 계약금액", placeholder="예: 220000000")
-    기지급금액 = st.text_input("💸 금일 송금액(일부금)", placeholder="예: 5000만원")
-with c5:
-    작성예정일 = st.text_input("📝 본계약 작성예정일시", placeholder="예: 25년 11월 13일")
-    기지급일자 = st.text_input("📅 일부금 송금일자", placeholder="예: 2025.11.3.")
-    근저당원금 = st.text_input("🏦 근저당 설정원금(억)", placeholder="예: 7 (숫자만 입력)")
-with c6:
-    중도금   = st.text_input("⏳ 중도금 및 지급일", placeholder="예: 880,000,000원 / 2025.12.3.")
-    잔금     = st.text_input("🏁 잔금 및 지급일", placeholder="예: 700,000,000원 / 2026.2.27.")
-    상환일   = st.text_input("📆 근저당 상환약속일", placeholder="예: 26년1월30일")
+    st.markdown('<div class="section-title">🧱 그룹 2: 변수 입력 폼</div>', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("**🏗️ 부동의 표시 및 권리관계**")
+        구역명   = st.text_input("📍 구역명", placeholder="예: 노량진8")
+        진행단계 = st.text_input("📍 해당 구역 진행단계", placeholder="예: 21.12.29 관리처분인가...")
+        소재지   = st.text_input("🏠 대상물건 소재지", placeholder="예: 노량진동 234-5외 1필지")
+        신청주택형 = st.text_input("🏢 신청 주택형", placeholder="예: 84㎡")
+        조합원번호 = st.text_input("🔢 조합원번호", placeholder="예: 854")
+    with c2:
+        st.markdown("**📊 재개발 가액 정보 & 일정**")
+        종전자산   = st.text_input("📉 종전자산평가액", placeholder="예: 415,466,490원")
+        비례율     = st.text_input("📊 비례율", placeholder="예: 100.87%")
+        권리가액   = st.text_input("📈 권리가액", placeholder="예: 419,081,048원")
+        멸실기한   = st.text_input("⏰ 멸실 등기 최대 기한", placeholder="예: 2026.01.29")
+        작성예정일 = st.text_input("📝 본계약 작성예정일시", placeholder="예: 25년 11월13일이내 협의")
+    with c3:
+        st.markdown("**💰 주요 조건 및 금액합의**")
+        잔금     = st.text_input("🏁 잔금액 및 지급일", placeholder="예: 700,000,000원 / 2026.2.27.")
+        전세보증금 = st.text_input("🤝 조건부 전세보증금", placeholder="예: 10 (=10억)")
+        근저당원금 = st.text_input("🏦 근저당 설정원금(억)", placeholder="예: 7 (=7억)")
+        상환일   = st.text_input("📆 근저당 상환일", placeholder="예: 26년1월30일")
 
-st.divider()
-st.markdown('<div class="section-title">✅ 약정서 전용 옵션 특약 선택</div>', unsafe_allow_html=True)
-st.caption("체크된 특약만 **계약금일부금 약정서**에 포함됩니다. (본 계약서 특약 모드에서는 위 옵션이 무시되고 고정 특약이 출력됩니다)")
+    st.divider()
+    st.markdown('<div class="section-title">☑️ 선택 옵션 특약 (상황에 따라 체크)</div>', unsafe_allow_html=True)
+    st.caption("해당 기능은 데스크탑 버전(전문/심화버전)에서 전체 지원되며 웹앱에서는 기본 출력됩니다.")
 
-col_chk1, col_chk2 = st.columns(2)
-with col_chk1:
-    opt_jeonse = st.checkbox("임대차 조건부 (전세보증금 잔금 공제)", value=True)
-    opt_loan = st.checkbox("근저당 조건부 (근저당 설정 및 기환 상환)", value=True)
-    opt_predunggi = st.checkbox("투기과열지구 매수자 선등기", value=True)
-with col_chk2:
-    opt_noloan_check = st.checkbox("무근저당 확인 및 말소", value=True)
-    opt_loan_coop = st.checkbox("대출실행 협조", value=True)
-    opt_eju_loan = st.checkbox("이주비대출 미접수 확인", value=True)
+else:
+    # --- 약정서 모드 ---
+    st.markdown('<div class="section-title">🧱 그룹 2: 변수 입력 폼 (약정서 전용)</div>', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("**🏗️ 물건 기본 및 당사자**")
+        구역명   = st.text_input("📍 구역명", placeholder="예: 노량진8")
+        소재지   = st.text_input("🏠 대상물건 소재지", placeholder="예: 노량진동 234-5외 1필지")
+        매도인   = st.text_input("👤 매도인 성명 전원", placeholder="예: 김진영, 신혜경")
+        매수인   = st.text_input("👥 매수인 성명 전원", placeholder="예: 권정환, 윤선미")
+        신청주택형 = st.text_input("🏢 신청 주택형", placeholder="예: 84㎡")
+    with c2:
+        st.markdown("**💰 금액 및 조건부 셋팅**")
+        총매매금액 = st.text_input("💵 총 매매금액", placeholder="예: 2,260,000,000원")
+        총계약금   = st.text_input("💰 총 계약금액", placeholder="예: 220,000,000원")
+        기지급금액 = st.text_input("💸 기지급 계약금액", placeholder="예: 5천만원")
+        전세보증금 = st.text_input("🤝 조건부 전세보증금", placeholder="예: 10 (=10억)")
+        근저당원금 = st.text_input("🏦 근저당 설정 원금", placeholder="예: 7 (=7억)")
+    with c3:
+        st.markdown("**📆 계좌 및 일정 등**")
+        계좌번호 = st.text_input("💳 계약금 수령 계좌번호", placeholder="예: 신한 110-155-7.. 최영민")
+        기지급일자 = st.text_input("📅 송금일자", placeholder="예: 2025.11.3.")
+        작성예정일 = st.text_input("📝 본계약 작성예정일", placeholder="예: 25년 11월13일이내")
+        중도금   = st.text_input("⏳ 중도금액 및 지급일", placeholder="예: 880,000,000원 / 2025.12...")
+        잔금     = st.text_input("🏁 잔금액 및 지급일", placeholder="예: 700,000,000원 / 2026.2.27...")
+        상환일   = st.text_input("📆 근저당 상환일", placeholder="예: 26년1월30일")
 
-st.divider()
+    st.divider()
+    st.markdown('<div class="section-title">✅ 약정서용 옵션 특약 (상황에 따라 체크)</div>', unsafe_allow_html=True)
+    col_chk1, col_chk2 = st.columns(2)
+    with col_chk1:
+        opt_jeonse = st.checkbox("임대차 조건부", value=True, help="조건부 전세 (입주시까지 전세보증금 잔금 공제)")
+        opt_loan = st.checkbox("근저당 조건부", value=True, help="조건부 근저당 설정 (매도인이 잔금 전 근저당 설정)")
+        opt_predunggi = st.checkbox("투기과열지구 매수자 선등기", value=True)
+    with col_chk2:
+        opt_noloan_check = st.checkbox("무근저당 확인 및 말소", value=True)
+        opt_loan_coop = st.checkbox("대출실행 협조", value=True)
+        opt_eju_loan = st.checkbox("이주비대출 미접수 확인", value=True)
+
+# -----------------------------------------------------------
+
 
 # ─────────────────────────────────── 특약 생성 ───────────────────────────────
 
