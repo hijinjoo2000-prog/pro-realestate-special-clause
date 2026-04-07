@@ -182,8 +182,8 @@ def gen_clauses():
 
     footer_cancel = "\n\n*계약금 일부 입금 후, 일방 해제 시\n매도인의 일방적 해제 시에는 계약금일부 입금금액의 배액을 상환하기로 하며,\n매수인의 일방적 해제 시에는 계약금일부 입금금액을 포기하기로 한다.\n"
 
-    jeonse_val = val(전세보증금, "eok") if 전세보증금.strip() else "8억원"
-    loan_prin = val(근저당원금, "eok") if 근저당원금.strip() else "7억원"
+    jeonse_val = val(전세보증금, "eok")
+    loan_prin = val(근저당원금, "eok")
     
     # Calculate 120%
     loan_p_raw = 근저당원금.replace(",", "").replace(" ", "").replace("억", "")
@@ -191,9 +191,9 @@ def gen_clauses():
         loan_m = float(loan_p_raw) * 1.2
         loan_max = f"{loan_m:g}억" if loan_m % 1 != 0 else f"{int(loan_m)}억"
     else:
-        loan_max = val(근저당원금) + "의 120%"
+        loan_max = "[   ]"
         
-    repay_dt = val(상환일) if 상환일.strip() else "26년1월30일"
+    repay_dt = val(상환일)
     area_val = val(구역명)
 
     if is_prov:
@@ -215,7 +215,7 @@ def gen_clauses():
             prov_clauses.append(f"현재 {area_val}은 투기과열지구로, 관리처분인가일 이후에 잔금을 치룰 경우에는 입주권승계가 제한된다. 현 상황을 고려하여 해당 잔금일을 {s_bal}로 정하였음에도 불구하고 잔금일 이전에 {area_val} 관리처분인가가 날 경우에는 남아있는 잔금 금액 만큼 근저당을 추가로 설정하고 매수자가 등기먼저 넘겨받기로 하며, 이 때에도 근저당 설정비는 매수자가 반반 부담하기로 한다.")
         if opt_prov_4: prov_clauses.append("현 등기부상 설정된 근저당은 없는 상태이며, 계약일 이후 해당물건에 해가되는 각종 추가 등기사항 발생 시, 매도인 책임하에 반드시 상환 말소하기로 한다.")
         if opt_prov_5: prov_clauses.append("매도인은 매수인이 잔금시 대출실행하는 것에 협조하기로 한다.")
-        if opt_prov_6: prov_clauses.append("현재 이주비 대출은 신청접수하지 않은 상태로, 매도자는 감정평가금액의 60%까지 이주비신청이 된다는 사실을 조합에 확인해주고 하는 계약이다.")
+        if opt_prov_6: prov_clauses.append("현재 이주비 대출은 신청접수하지 않은 상태로, 매도자는 감정평가금액의 [   ]%까지 이주비신청이 된다는 사실을 조합에 확인해주고 하는 계약이다.")
             
         prov_clauses.append(f"현재 {area_val}은 투기과열지구로서 매도인 및 매수인은 정비사업의 5년 내지 10년 재당첨제한에 대한 설명을 듣고 인지하였으며, 재당첨금지에 해당하여 현금청산 시 단, 유책의 당사자가 각각 책임지기로 한다.")
         prov_clauses.append("본 약정서에 표시되지 않은 사항은 민법 및 부동산 매매 일반관례에 따른다.")
