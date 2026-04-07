@@ -98,58 +98,102 @@ st.divider()
 
 # ─────────────────────────────────── 입력 폼 ─────────────────────────────────
 
-col1, col2 = st.columns(2)
+if is_prov:
+    # ════════════════════════════════════════════════════════
+    # 약정서 모드 전용 입력 폼
+    # ════════════════════════════════════════════════════════
+    st.markdown('<div class="section-title">📝 약정서 작성 정보</div>', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
 
-with col1:
-    st.markdown('<div class="section-title">🏗️ 물건 기본 정보</div>', unsafe_allow_html=True)
-    구역명 = st.text_input("구역명", placeholder="예: 노량진8")
-    진행단계 = st.text_input("해당 구역 진행단계", placeholder="예: 21.12.29 관리처분인가, 현 이주철거완료")
-    소재지 = st.text_input("대상물건 소재지", placeholder="예: 노량진동 234-5외 1필지") if is_prov else ""
-    종전자산 = st.text_input("종전자산평가액(감정가액)", placeholder="예: 415466490")
-    비례율 = st.text_input("비례율", placeholder="예: 100.87")
-    권리가액 = st.text_input("권리가액", placeholder="예: 419081048")
-    조합원번호 = st.text_input("조합원번호", placeholder="예: 854")
-    신청주택형 = st.text_input("신청 주택형", placeholder="예: 84")
+    with c1:
+        st.markdown("**🏗️ 물건 · 당사자**")
+        구역명   = st.text_input("구역명", placeholder="예: 노량진3구역", key="p_zone")
+        소재지   = st.text_input("대상물건 소재지", placeholder="예: 노량진동 234-5외 1필지 제1층 제102호", key="p_addr")
+        매도인   = st.text_input("매도인 전원 성명", placeholder="예: 김귀임", key="p_seller")
+        매수인   = st.text_input("매수인 전원 성명", placeholder="예: 권정환, 윤선미", key="p_buyer")
+        조합원번호 = st.text_input("조합원번호", placeholder="예: 52", key="p_jono")
+        신청주택형 = st.text_input("신청 주택형 (타입)", placeholder="예: 84+59", key="p_type")
+        계좌번호 = st.text_input("매도인 입금계좌", placeholder="예: (기업) 071-007498-03-011 김귀임", key="p_acnt")
 
-with col2:
-    st.markdown('<div class="section-title">👥 당사자 및 금액 정보</div>', unsafe_allow_html=True)
-    매도인 = st.text_input("매도인 전원 성명", placeholder="예: 김진영, 신혜경")
-    매수인 = st.text_input("매수인 전원 성명", placeholder="예: 권정환, 윤선미") if is_prov else ""
-    수령인 = st.text_input("대금 일괄 수령인명", placeholder="예: 김진영")
-    계좌번호 = st.text_input("계약금 수령 계좌번호", placeholder="예: 신한은행 110-155-784945 김진영")
-    기지급금액 = st.text_input("기지급 계약금액", placeholder="예: 5000만원")
-    기지급일자 = st.text_input("기지급 송금일자", placeholder="예: 2025.11.3.")
+    with c2:
+        st.markdown("**💰 금액 · 일정**")
+        총매매금액 = st.text_input("총 매매금액", placeholder="예: 2260000000", key="p_total")
+        총계약금   = st.text_input("총 계약금액", placeholder="예: 220000000", key="p_dep")
+        기지급금액 = st.text_input("금일 송금액(계약금 일부)", placeholder="예: 5000만원", key="p_paid")
+        기지급일자 = st.text_input("지급일자", placeholder="예: 2025.11.3.", key="p_pdate")
+        작성예정일 = st.text_input("계약서 작성예정일", placeholder="예: 25년 11월13일이내 협의", key="p_cdate")
+        중도금     = st.text_input("중도금 및 지급일", placeholder="예: 880,000,000원 / 2025.12.3.", key="p_mid")
+        잔금       = st.text_input("잔금 및 지급일", placeholder="예: 700,000,000원 / 2026.2.27.", key="p_bal")
 
-    if is_prov:
-        총매매금액 = st.text_input("총 매매금액", placeholder="예: 2260000000")
-        총계약금 = st.text_input("총 계약금액", placeholder="예: 220000000")
-        작성예정일 = st.text_input("계약서 작성예정일", placeholder="예: 25년 11월 13일 이내 협의")
-        중도금 = st.text_input("중도금액 및 지급일", placeholder="예: 880,000,000원 / 2025.12.3.")
-        잔금 = st.text_input("잔금액 및 지급일", placeholder="예: 700,000,000원 / 2026.2.27.")
-    else:
-        총매매금액 = 총계약금 = 작성예정일 = 중도금 = 잔금 = ""
+    with c3:
+        st.markdown("**📊 재개발 · 임대차 정보**")
+        종전자산   = st.text_input("종전자산평가액(감정가액)", placeholder="예: 415466490", key="p_asset")
+        비례율     = st.text_input("비례율", placeholder="예: 100.66", key="p_ratio")
+        권리가액   = st.text_input("권리가액", placeholder="예: 663000000", key="p_right")
+        전세보증금 = st.text_input("전세보증금", placeholder="예: 8억", key="p_jeonse")
 
-st.divider()
+    # 약정서에서 불필요한 변수 기본값 처리
+    진행단계 = ""
+    수령인   = ""
 
-# ─────────────────────────────────── 선택 옵션 ───────────────────────────────
+    # 약정서에서 선택 옵션은 불필요 (모두 고정 특약으로 포함됨)
+    opt_ilbugeom = False
+    opt_gijigeum = False
+    opt_jeonse   = False
+    opt_isabi    = False
+    opt_su익     = False
+    opt_daegeum  = False
+    opt_ijubi    = False
+    opt_myeolsil = False
+    멸실최대기한 = ""
 
-st.markdown('<div class="section-title">☑️ 선택 특약 옵션</div>', unsafe_allow_html=True)
-c1, c2, c3, c4 = st.columns(4)
+else:
+    # ════════════════════════════════════════════════════════
+    # 계약서 특약 모드 전용 입력 폼
+    # ════════════════════════════════════════════════════════
+    col1, col2 = st.columns(2)
 
-with c1:
-    opt_ilbugeom = st.checkbox("계약금의 일부금 배액배상")
-    opt_gijigeum = st.checkbox("기지급 계약금 명시")
-with c2:
-    전세보증금 = st.text_input("조건부 전세보증금 (억)", placeholder="예: 4.6", key="jeonse")
-    opt_jeonse = st.checkbox("조건부 임대차(전세)")
-    opt_isabi = st.checkbox("이사비/이주비 수령")
-with c3:
-    opt_su익 = st.checkbox("수익 및 관리 책임")
-    opt_daegeum = st.checkbox("대금 수령인 지정")
-    opt_ijubi = st.checkbox("이주비 이자 정산")
-with c4:
-    멸실최대기한 = st.text_input("멸실 등기 최대 기한", placeholder="예: 2026.01.29", key="myeol")
-    opt_myeolsil = st.checkbox("멸실 등기 대응")
+    with col1:
+        st.markdown('<div class="section-title">🏗️ 물건 기본 정보</div>', unsafe_allow_html=True)
+        구역명    = st.text_input("구역명", placeholder="예: 노량진8", key="c_zone")
+        진행단계  = st.text_input("해당 구역 진행단계", placeholder="예: 21.12.29 관리처분인가, 현 이주철거완료", key="c_stage")
+        종전자산  = st.text_input("종전자산평가액(감정가액)", placeholder="예: 415466490", key="c_asset")
+        비례율    = st.text_input("비례율", placeholder="예: 100.87", key="c_ratio")
+        권리가액  = st.text_input("권리가액", placeholder="예: 419081048", key="c_right")
+        조합원번호 = st.text_input("조합원번호", placeholder="예: 854", key="c_jono")
+        신청주택형 = st.text_input("신청 주택형", placeholder="예: 84", key="c_type")
+
+    with col2:
+        st.markdown('<div class="section-title">👥 당사자 · 금액 정보</div>', unsafe_allow_html=True)
+        매도인    = st.text_input("매도인 전원 성명", placeholder="예: 김진영, 신혜경", key="c_seller")
+        수령인    = st.text_input("대금 일괄 수령인명", placeholder="예: 김진영", key="c_recv")
+        계좌번호  = st.text_input("계약금 수령 계좌번호", placeholder="예: 신한은행 110-155-784945 김진영", key="c_acnt")
+        기지급금액 = st.text_input("기지급 계약금액", placeholder="예: 5000만원", key="c_paid")
+        기지급일자 = st.text_input("기지급 송금일자", placeholder="예: 2025.11.3.", key="c_pdate")
+
+    # 계약서 모드에서 약정서 전용 변수 기본값
+    매수인 = ""
+    소재지 = ""
+    총매매금액 = 총계약금 = 작성예정일 = 중도금 = 잔금 = ""
+
+    st.divider()
+    st.markdown('<div class="section-title">☑️ 선택 특약 옵션</div>', unsafe_allow_html=True)
+    c1, c2, c3, c4 = st.columns(4)
+
+    with c1:
+        opt_ilbugeom = st.checkbox("계약금의 일부금 배액배상", key="c_opt1")
+        opt_gijigeum = st.checkbox("기지급 계약금 명시", key="c_opt2")
+    with c2:
+        전세보증금 = st.text_input("조건부 전세보증금 (억)", placeholder="예: 4.6", key="c_jeonse")
+        opt_jeonse = st.checkbox("조건부 임대차(전세)", key="c_opt3")
+        opt_isabi  = st.checkbox("이사비/이주비 수령", key="c_opt4")
+    with c3:
+        opt_su익   = st.checkbox("수익 및 관리 책임", key="c_opt5")
+        opt_daegeum = st.checkbox("대금 수령인 지정", key="c_opt6")
+        opt_ijubi  = st.checkbox("이주비 이자 정산", key="c_opt7")
+    with c4:
+        멸실최대기한 = st.text_input("멸실 등기 최대 기한", placeholder="예: 2026.01.29", key="c_myeol")
+        opt_myeolsil = st.checkbox("멸실 등기 대응", key="c_opt8")
 
 st.divider()
 
