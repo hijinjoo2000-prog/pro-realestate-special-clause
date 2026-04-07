@@ -98,239 +98,66 @@ st.divider()
 
 # ─────────────────────────────────── 입력 폼 ─────────────────────────────────
 
-if is_prov:
-    # ════════════════════════════════════════════════════════
-    # 약정서 모드 전용 입력 폼
-    # ════════════════════════════════════════════════════════
-    st.markdown('<div class="section-title">📝 약정서 작성 정보</div>', unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
-
-    with c1:
-        st.markdown("**🏗️ 물건 · 당사자**")
-        구역명   = st.text_input("구역명", placeholder="예: 노량진3구역", key="p_zone")
-        소재지   = st.text_input("대상물건 소재지", placeholder="예: 노량진동 234-5외 1필지 제1층 제102호", key="p_addr")
-        매도인   = st.text_input("매도인 전원 성명", placeholder="예: 김귀임", key="p_seller")
-        매수인   = st.text_input("매수인 전원 성명", placeholder="예: 권정환, 윤선미", key="p_buyer")
-        조합원번호 = st.text_input("조합원번호", placeholder="예: 52", key="p_jono")
-        신청주택형 = st.text_input("신청 주택형 (타입)", placeholder="예: 84+59", key="p_type")
-        계좌번호 = st.text_input("매도인 입금계좌", placeholder="예: (기업) 071-007498-03-011 김귀임", key="p_acnt")
-
-    with c2:
-        st.markdown("**💰 금액 · 일정**")
-        총매매금액 = st.text_input("총 매매금액", placeholder="예: 2260000000", key="p_total")
-        총계약금   = st.text_input("총 계약금액", placeholder="예: 220000000", key="p_dep")
-        기지급금액 = st.text_input("금일 송금액(계약금 일부)", placeholder="예: 5000만원", key="p_paid")
-        기지급일자 = st.text_input("지급일자", placeholder="예: 2025.11.3.", key="p_pdate")
-        작성예정일 = st.text_input("계약서 작성예정일", placeholder="예: 25년 11월13일이내 협의", key="p_cdate")
-        중도금     = st.text_input("중도금 및 지급일", placeholder="예: 880,000,000원 / 2025.12.3.", key="p_mid")
-        잔금       = st.text_input("잔금 및 지급일", placeholder="예: 700,000,000원 / 2026.2.27.", key="p_bal")
-
-    with c3:
-        st.markdown("**📊 재개발 · 임대차 정보**")
-        종전자산   = st.text_input("종전자산평가액(감정가액)", placeholder="예: 415466490", key="p_asset")
-        비례율     = st.text_input("비례율", placeholder="예: 100.66", key="p_ratio")
-        권리가액   = st.text_input("권리가액", placeholder="예: 663000000", key="p_right")
-        전세보증금 = st.text_input("전세보증금", placeholder="예: 8억", key="p_jeonse")
-
-    # 약정서에서 불필요한 변수 기본값 처리
-    진행단계 = ""
-    수령인   = ""
-
-    # 약정서에서 선택 옵션은 불필요 (모두 고정 특약으로 포함됨)
-    opt_ilbugeom = False
-    opt_gijigeum = False
-    opt_jeonse   = False
-    opt_isabi    = False
-    opt_su익     = False
-    opt_daegeum  = False
-    opt_ijubi    = False
-    opt_myeolsil = False
-    멸실최대기한 = ""
-
-else:
-    # ════════════════════════════════════════════════════════
-    # 계약서 특약 모드 전용 입력 폼
-    # ════════════════════════════════════════════════════════
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown('<div class="section-title">🏗️ 물건 기본 정보</div>', unsafe_allow_html=True)
-        구역명    = st.text_input("구역명", placeholder="예: 노량진8", key="c_zone")
-        진행단계  = st.text_input("해당 구역 진행단계", placeholder="예: 21.12.29 관리처분인가, 현 이주철거완료", key="c_stage")
-        종전자산  = st.text_input("종전자산평가액(감정가액)", placeholder="예: 415466490", key="c_asset")
-        비례율    = st.text_input("비례율", placeholder="예: 100.87", key="c_ratio")
-        권리가액  = st.text_input("권리가액", placeholder="예: 419081048", key="c_right")
-        조합원번호 = st.text_input("조합원번호", placeholder="예: 854", key="c_jono")
-        신청주택형 = st.text_input("신청 주택형", placeholder="예: 84", key="c_type")
-
-    with col2:
-        st.markdown('<div class="section-title">👥 당사자 · 금액 정보</div>', unsafe_allow_html=True)
-        매도인    = st.text_input("매도인 전원 성명", placeholder="예: 김진영, 신혜경", key="c_seller")
-        수령인    = st.text_input("대금 일괄 수령인명", placeholder="예: 김진영", key="c_recv")
-        계좌번호  = st.text_input("계약금 수령 계좌번호", placeholder="예: 신한은행 110-155-784945 김진영", key="c_acnt")
-        기지급금액 = st.text_input("기지급 계약금액", placeholder="예: 5000만원", key="c_paid")
-        기지급일자 = st.text_input("기지급 송금일자", placeholder="예: 2025.11.3.", key="c_pdate")
-
-    # 계약서 모드에서 약정서 전용 변수 기본값
-    매수인 = ""
-    소재지 = ""
-    총매매금액 = 총계약금 = 작성예정일 = 중도금 = 잔금 = ""
-
-    st.divider()
-    st.markdown('<div class="section-title">☑️ 선택 특약 옵션</div>', unsafe_allow_html=True)
-    c1, c2, c3, c4 = st.columns(4)
-
-    with c1:
-        opt_ilbugeom = st.checkbox("계약금의 일부금 배액배상", key="c_opt1")
-        opt_gijigeum = st.checkbox("기지급 계약금 명시", key="c_opt2")
-    with c2:
-        전세보증금 = st.text_input("조건부 전세보증금 (억)", placeholder="예: 4.6", key="c_jeonse")
-        opt_jeonse = st.checkbox("조건부 임대차(전세)", key="c_opt3")
-        opt_isabi  = st.checkbox("이사비/이주비 수령", key="c_opt4")
-    with c3:
-        opt_su익   = st.checkbox("수익 및 관리 책임", key="c_opt5")
-        opt_daegeum = st.checkbox("대금 수령인 지정", key="c_opt6")
-        opt_ijubi  = st.checkbox("이주비 이자 정산", key="c_opt7")
-    with c4:
-        멸실최대기한 = st.text_input("멸실 등기 최대 기한", placeholder="예: 2026.01.29", key="c_myeol")
-        opt_myeolsil = st.checkbox("멸실 등기 대응", key="c_opt8")
+st.markdown('<div class="section-title">🧱 통합 기본 정보 (약정서 & 특약 공통)</div>', unsafe_allow_html=True)
+c1, c2, c3 = st.columns(3)
+with c1:
+    st.markdown("**🏗️ 물건 기본**")
+    구역명   = st.text_input("📍 구역명", placeholder="예: 노량진3구역")
+    소재지   = st.text_input("🏠 대상물건 소재지", placeholder="예: 노량진동 234-5외 1필지")
+    조합원번호 = st.text_input("🔢 조합원번호", placeholder="예: 52")
+    신청주택형 = st.text_input("🏢 신청 주택형", placeholder="예: 84+59")
+with c2:
+    st.markdown("**👥 당사자 및 계좌**")
+    매도인   = st.text_input("👤 매도인 성명", placeholder="예: 김귀임")
+    매수인   = st.text_input("👥 매수인 성명", placeholder="예: 권정환, 윤선미")
+    계좌번호 = st.text_input("💳 매도인 입금계좌", placeholder="예: (기업) 071-007...")
+    전세보증금 = st.text_input("🤝 조건부 전세보증금", placeholder="예: 8억 (숫자+억)")
+with c3:
+    st.markdown("**📊 재개발 가액 정보**")
+    종전자산   = st.text_input("📉 감정가액(종전자산)", placeholder="예: 415466490")
+    비례율     = st.text_input("📊 비례율", placeholder="예: 100.66")
+    권리가액   = st.text_input("📈 권리가액", placeholder="예: 663000000")
 
 st.divider()
+st.markdown('<div class="section-title">💰 대금 및 상세 조건 (약정서 및 세부 특약용)</div>', unsafe_allow_html=True)
+c4, c5, c6 = st.columns(3)
+with c4:
+    총매매금액 = st.text_input("💵 총 매매금액", placeholder="예: 2260000000")
+    총계약금   = st.text_input("💰 총 계약금액", placeholder="예: 220000000")
+    기지급금액 = st.text_input("💸 금일 송금액(가계약금)", placeholder="예: 5000만원")
+with c5:
+    작성예정일 = st.text_input("📝 본계약 작성예정일", placeholder="예: 25년 11월 13일")
+    기지급일자 = st.text_input("📅 가계약 송금일자", placeholder="예: 2025.11.3.")
+    근저당원금 = st.text_input("🏦 근저당 설정원금(억)", placeholder="예: 7 (숫자만 입력)")
+with c6:
+    중도금   = st.text_input("⏳ 중도금 및 지급일", placeholder="예: 880,000,000원 / 2025.12.3.")
+    잔금     = st.text_input("🏁 잔금 및 지급일", placeholder="예: 700,000,000원 / 2026.2.27.")
+    상환일   = st.text_input("📆 원금상환 약속일", placeholder="예: 26년1월30일")
+
+st.divider()
+
 
 # ─────────────────────────────────── 특약 생성 ───────────────────────────────
 
 def gen_clauses():
-    clauses = []
-
-    # 공통 필수
-    clauses.append("매도인과 매수인은 위 인쇄된 계약내용[제 1조-제9조]에 대해 설명을 듣고 인지 후 계약을 체결함.")
-    clauses.append("현 시설 상태에서의 매매계약이며 계약 당사자는 등기사항전부증명서, 건축물대장, 토지대장, 토지이용계획확인서 등이 이상이 없음을 확인하고 체결하는 계약임.")
-
     jeon = val(종전자산, "money")
-    bire = val(비례율, "pct")
+    bire = f"{round(float(비례율), 2)}%" if 비례율.replace(".", "").isdigit() else (비례율 or "[    ]%")
     gwon = val(권리가액, "money")
     htype = val(신청주택형, "area")
     jo_num = val(조합원번호)
 
-    clauses.append(
-        f"({val(구역명)})구역 조합이 매도인에게 통지한 \"개별 추정분담금 정보제공통지\" 서류상 본 물건 종전자산가액은 {jeon}, "
-        f"비례율 {bire}, 권리가액 {gwon} 임을 상호 확인하였으며, 신청한 주택형은 {htype}임을 매도인이 확인해주고 계약을 체결한다.(관리처분인가 내역서 사본 참조)\n"
-        f"   (*조합원번호: {jo_num} / *감정평가 {jeon} 권리가액 {gwon} 나옴.)"
+    footer_cancel = (
+        "\n\n*계약금 일부 입금 후, 일방 해제 시 \n"
+        "매도인의 일방적 해제 시에는 계약금일부 입금금액의 배액을 상환하기로 하며,\n"
+        "매수인의 일방적 해제 시에는 계약금일부 입금금액을 포기하기로 한다.\n"
     )
 
-    clauses.append(
-        f"매수인은 대상부동산이 {val(구역명)} 재개발추진지역({val(진행단계)})임을 인지하고, "
-        f"당해 재개발 사업진행과 조합원에 대한 의무, 권리사항 및 아파트 분양여부에 대하여 조합에 확인하고, 충분히 숙지하고 본 계약을 체결한다."
-    )
+    jeonse_val = val(전세보증금, "eok") if 전세보증금 else "8억"
+    loan_prin = f"{근저당원금}억" if 근저당원금 else "7억"
+    loan_max  = f"{float(근저당원금)*1.2:.1f}억" if 근저당원금 else "8.4억"
+    repay_dt  = 상환일 if 상환일 else "26년1월30일"
 
-    clauses.append(
-        f"매도인은(세대원 포함) {val(구역명)} 내에 본건 외 다른 물건이 없음을 확약하며, "
-        f"경합 발생 시 본 물건을 우선으로 한다. 위반 시 계약은 무조건 해제되며 매도인은 매수인에게 손해배상 책임을 진다."
-    )
-
-    clauses.append("매수인은 도정법 제72조 6항에 따른 재당첨 제한(5~10년) 규정을 숙지하였으며, 이로 인한 지위 미승계 시 매수인이 모든 책임을 진다.")
-    clauses.append("매도인은 잔금일까지 조합으로부터 통보받은 중요 정보를 즉시 매수인에게 고지하며, 의결권 행사가 필요할 경우 매수인의 의사에 따른다.")
-    clauses.append("매도인은 계약일 이후 잔금 익일까지 근저당 및 기타 제한물권을 추가로 설정하지 않으며 현 등기부 상태를 유지한다.")
-    clauses.append("국가, 조합, 금융권의 사정으로 인한 사업 지연 및 건축비 상승 등 가격 변동성에 대해 중개사에게 책임을 묻지 않는다.")
-    clauses.append("본 계약부동산에 관한 제세공과금은 인도일을 기준으로 하며, 지방세는 지방세법상 납부의무자가 부담한다.")
-    clauses.append("세무에 관한 사항은 세무사에게 의뢰하기로 한다.")
-
-    # 선택 특약
-    if opt_gijigeum:
-        clauses.append(
-            f"계약금 중 금 {val(기지급금액)}은 {val(기지급일자)} 매도인계좌로 ({val(계좌번호)}) 입금했으며, "
-            f"나머지는 계약서 작성당일 매도인계좌로 입금하면 본 계약은 성립한다. 또한 중도금과 잔금도 동일 계좌로 입금하기로 한다."
-        )
-
-    if opt_ilbugeom:
-        clauses.append(
-            "계약금의 일부금(예치금) 지급 후 일방의 단순 변심으로 본 계약 체결을 포기할 경우, "
-            "매수인은 기지급액을 포기하고 매도인은 수령액의 배액을 상환함으로써 계약을 해제할 수 있다."
-        )
-
-    if opt_jeonse:
-        clauses.append(
-            f"잔금과 동시에 매도인이 {val(전세보증금, 'eok')}에 전세로 거주하는 조건부 계약이며, "
-            f"임대차 기간 중 일체 수리비는 매도인(임차인)이 부담한다."
-        )
-
-    if opt_isabi:
-        clauses.append("이주비 대출은 매수인(임대인)이 수령하여 전세금 반환에 사용하며, 실거주에 따른 이사비는 현재 거주자(매도인)가 수령한다.")
-
-    if opt_su익:
-        clauses.append("이주 전까지 발생하는 월세 수익은 매도인이 수령하되, 해당 기간의 주택 관리 및 임차인 관리는 매도인이 책임진다.")
-
-    if opt_daegeum:
-        acnt = val(계좌번호) if val(계좌번호) != "[    ]" else "(계좌정보 기재)"
-        clauses.append(f"매도인 {val(매도인)}님은 매매대금 전체에 대해 {val(수령인)}님 소유의 통장({acnt})으로 받는 것에 동의한다.")
-
-    if opt_ijubi:
-        clauses.append("기본 이주비 이자는 매수자가 부담하며, 사업비 명목의 이주비 이자는 잔금일까지 매도자가, 이후부터는 매수자가 부담한다.")
-
-    if opt_myeolsil:
-        clauses.append(
-            f"잔금일까지 멸실등기가 안 될 경우 잔금일을 연기하되, "
-            f"최대 기한({val(멸실최대기한)}) 초과 시 근저당 설정 후 등기를 먼저 이전하기로 한다."
-        )
-
-    clauses.append("첨부서류: 중개대상물확인설명서, 등기사항증명서, 토지대장, 지적도, 토지이용계획확인원 각 1부.")
-
-    numbered = "\n".join(f"{i}. {c}" for i, c in enumerate(clauses, 1))
-
-    acnt_line = f"\n\n※ 계약금 수령 계좌번호: {val(계좌번호)}" if val(계좌번호) != "[    ]" else ""
-
-    if is_prov:
-        # ─── 약정서 전용 특약 ───
-        prov_clauses = []
-        prov_clauses.append("현시설상태에서의 계약이다.")
-        prov_clauses.append(
-            f"등기부등본, 건축물대장, 분양통지서 상 조합원번호 {jo_num}번, 소유자 통장을 통해 "
-            f"소유자 확인과 권리관계 확인하고 계약을 진행함."
-        )
-        prov_clauses.append(
-            f"본계약은 {val(구역명)} 재정비 촉진지구 입주권 승계를 위한 계약으로, "
-            f"해당매물은 분양신청 완료된 매물로, {htype} 타입 신청한 매물임을 매도인이 확인해 주고 하는 계약이다.\n"
-            f"(매도자는 계약일에 분양신청 접수증을 지참하기로 한다.)"
-        )
-        prov_clauses.append(
-            f"매도인은(세대주및세대원포함){val(구역명)}에 해당물건 하나만 있음을 확인하고 "
-            f"만약 해당물건 외에 다른 물건이 있어 입주권에 경합발생시 해당물건의 입주권을 우선으로 한다.\n"
-            f"만약 위 사항으로 인해 매수자에게 손해가 발생할 경우 매도자는 그에 따른 손해배상을 매수자에게 해주기로 한다."
-        )
-        jeonse_val = val(전세보증금, "eok") if 전세보증금 else "[    ]억"
-        prov_clauses.append(
-            f"본계약은 잔금과 동시에 매도인이 전세로 본 매매 물건에 임대차 하기로 하는 조건부 계약이다. "
-            f"(이주시까지 전세보증금{jeonse_val}) 전세보증금 {jeonse_val}은 잔금에서 공제한다.\n"
-            f"새로운 임차인에게 전대차 하는 경우, 임대차 보증금은 현 매도인이 책임지고 반환한다."
-            f"(잔금일에 매수자는 임대인으로 매도자는 임차인으로 변경되는 전세계약서를 작성하기로 한다.)"
-        )
-        prov_clauses.append(
-            "본계약은 잔금과 동시에 매도인이 근저당 (원금 7억, 설정액 120% 8.4억)을 설정하는 조건의 계약으로 "
-            "원금 7억원은 잔금에서 공제하며, 근저당 설정 원금 7억원은 26년1월30일까지 상환하기로 한다. "
-            "만약 약속한 날짜까지 상환이 안될 경우 약속한 날로부터 이자가 발생하며 이자율은 연 10%로 하기로 한다."
-        )
-        prov_clauses.append(
-            f"현재 {val(구역명)}은 투기과열지구로, 관리처분인가일 이후에 잔금을 치룰 경우에는 입주권승계가 제한된다. "
-            f"현 상황을 고려하여 해당 잔금일을 {val(잔금)} 정하였음에도 불구하고 잔금일 이전에 {val(구역명)} 관리처분인가가 날 경우에는 "
-            f"남아있는 잔금 금액 만큼 근저당을 추가로 설정하고 매수자가 등기먼저 넘겨받기로 하며, "
-            f"이 때에도 근저당 설정비는 매수자가 반반 부담하기로 한다."
-        )
-        prov_clauses.append(
-            "현 등기부상 설정된 근저당은 없는 상태이며, 계약일 이후 해당물건에 해가되는 각종 추가 등기사항 발생 시, "
-            "매도인 책임하에 반드시 상환 말소하기로 한다."
-        )
-        prov_clauses.append("매도인은 매수인이 잔금시 대출실행하는 것에 협조하기로 한다.")
-        prov_clauses.append(
-            f"현재 이주비 대출은 신청접수하지 않은 상태로, 매도자는 감정평가금액의 60%까지 이주비신청이 된다는 사실을 조합에 확인해주고 하는 계약이다."
-        )
-        prov_clauses.append(
-            f"현재 {val(구역명)}은 투기과열지구로서 매도인 및 매수인은 정비사업의 5년 내지 10년 재당첨제한에 대한 설명을 듣고 인지하였으며, "
-            f"재당첨금지에 해당하여 현금청산 시 그 유책의 당사자가 각각 책임지기로 한다."
-        )
-        prov_clauses.append("기타사항은 부동산 매매에 관한 일반 관례에 따르기로 한다.")
-
-        numbered = "\n".join(f"{i}. {c}" for i, c in enumerate(prov_clauses, 1))
-
+    if contract_type == "약정서 폼 (계약금일부금)":
         header = (
             f"< 부동산 매매계약 약정서 >\n"
             f"부동산표시 : {val(소재지)} ({val(구역명)} 구역 내 매물)\n"
@@ -345,19 +172,51 @@ def gen_clauses():
             f"■중도금: {val(중도금)}\n\n"
             f"■임대차: 주전세 {jeonse_val}\n\n"
             f"■잔금: {val(잔금)}\n\n"
-            f"*매도인 입금계좌:\n{val(계좌번호)}\n\n\n"
-            f"*특약사항*\n"
+            f"*매도인 입금계좌:\n{val(계좌번호)}\n"
         )
-        footer = (
-            "\n\n*계약금 일부 입금 후, 일방 해제 시\n"
-            "매도인의 일방적 해제 시에는 계약금일부 입금금액의 배액을 상환하기로 하며,\n"
-            "매수인의 일방적 해제 시에는 계약금일부 입금금액을 포기하기로 한다.\n"
-        )
-        return header + numbered + footer
-    else:
+        return header + footer_cancel
+
+    elif contract_type == "물건 그룹 1 (노량진 등)":
+        clauses = [
+            "현시설상태에서의 계약이다.",
+            f"등기부등본, 건축물대장, 분양통지서 상 조합원번호 {jo_num}번, 소유자 통장을 통해 소유자 확인과 권리관계 확인하고 계약을 진행함.",
+            f"본계약은 {val(구역명)} 재정비 촉진지구 입주권 승계를 위한 계약으로, 해당매물은 분양신청 완료된 매물로, {htype}타입 신청한 매물임을 매도인이 확인해 주고 하는 계약이다.\n(매도자는 계약일에 분양신청 접수증을 지참하기로 한다.)",
+            f"매도인은(세대주및세대원포함){val(구역명)}에 해당물건 하나만 있음을 확인하고 만약 해당물건 외에 다른 물건이 있어 입주권에 경합발생시 해당물건의 입주권을 우선으로 한다.\n만약 위 사항으로 인해 매수자에게 손해가 발생할 경우 매도자는 그에 따른 손해배상을 매수자에게 해주기로 한다.",
+            f"본계약은 잔금과 동시에 매도인이 전세로 본 매매 물건에 임대차 하기로 하는 조건부 계약이다. (이주시까지 전세보증금 {jeonse_val}) 전세보증금 {jeonse_val}은 잔금에서 공제한다. \n새로운 임차인에게 전대차 하는 경우, 임대차 보증금은 현 매도인이 책임지고 반환한다.(잔금일에 매수자는 임대인으로 매도자는 임차인으로 변경되는 전세계약서를 작성하기로 한다.)",
+            f"본계약은 잔금과 동시에 매도인이 근저당 (원금 {loan_prin}, 설정액 120% {loan_max})을 설정하는 조건의 계약으로 원금 {loan_prin}은 잔금에서 공제하며, 근저당 설정 원금 {loan_prin}은 {repay_dt}까지 상환하기로 한다. 만약 약속한 날짜까지 상환이 안될 경우 약속한 날로부터 이자가 발생하며 이자율은 연 10%로 하기로 한다.",
+            f"현재 {val(구역명)}은 투기과열지구로, 관리처분인가일 이후에 잔금을 치룰 경우에는 입주권승계가 제한된다. 현 상황을 고려하여 해당 잔금일을 {val(잔금)} 정하였음에도 불구하고 잔금일 이전에 {val(구역명)} 관리처분인가가 날 경우에는 남아있는 잔금 금액 만큼 근저당을 추가로 설정하고 매수자가 등기먼저 넘겨받기로 하며, 이 때에도 근저당 설정비는 매수자가 반반 부담하기로 한다.",
+            "현 등기부상 설정된 근저당은 없는 상태이며, 계약일 이후 해당물건에 해가되는 각종 추가 등기사항 발생 시, 매도인 책임하에 반드시 상환 말소하기로 한다.",
+            "매도인은 매수인이 잔금시 대출실행하는 것에 협조하기로 한다.",
+            "현재 이주비 대출은 신청접수하지 않은 상태로, 매도자는 감정평가금액의 60%까지 이주비신청이 된다는 사실을 조합에 확인해주고 하는 계약이다.",
+            f"현재 {val(구역명)}은 투기과열지구로서 매도인 및 매수인은 정비사업의 5년 내지 10년 재당첨제한에 대한 설명을 듣고 인지하였으며, 재당첨금지에 해당하여 현금청산 시 그 유책의 당사자가 각각 책임지기로 한다.",
+            "기타사항은 부동산 매매에 관한 일반 관례에 따르기로 한다."
+        ]
         numbered = "\n".join(f"{i}. {c}" for i, c in enumerate(clauses, 1))
-        acnt_line = f"\n\n※ 계약금 수령 계좌번호: {val(계좌번호)}" if val(계좌번호) != "[    ]" else ""
-        return numbered + acnt_line
+        return numbered + footer_cancel
+
+    elif contract_type == "물건 그룹 2":
+        clauses = [
+            "현시설상태에서의 계약이다.",
+            f"등기부등본, 건축물대장 등을 통해 소유자 및 권리관계를 확인하고 계약을 진행함.",
+            f"본 매물은 {val(구역명)} 구역의 입주권 매물로, 관련된 모든 권리·사항은 현행 법령 및 조합의 정관에 따른다.",
+            f"잔금일은 {val(잔금)}로 정하되, 상호 협의 하에 이를 조정할 수 있다.",
+            "매도인은 매수인의 잔금 대출 및 등기 이전에 적극 협조하기로 한다.",
+            "기타사항은 부동산 매매에 관한 일반 관례에 따르기로 한다."
+        ]
+        numbered = "\n".join(f"{i}. {c}" for i, c in enumerate(clauses, 1))
+        return numbered + footer_cancel
+
+    elif contract_type == "물건 그룹 3":
+        clauses = [
+            "현시설상태에서의 계약이다.",
+            "본 계약은 당사자 간의 원만한 합의에 의해 체결되며, 계약일 이후 발생하는 각종 조세 및 공과금은 잔금일을 기준으로 정산한다.",
+            "해당 물건의 부동산 인도 요건 및 기타 특약사항은 본 계약서에 명시된 바에 따르며, 구체적인 내용은 별도로 협의한다.",
+            "기타사항은 부동산 매매에 관한 일반 관례 및 민법에 따르기로 한다."
+        ]
+        numbered = "\n".join(f"{i}. {c}" for i, c in enumerate(clauses, 1))
+        return numbered + footer_cancel
+    
+    return ""
 
 
 
